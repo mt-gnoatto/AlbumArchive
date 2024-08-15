@@ -4,18 +4,20 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+
+	_ "github.com/lib/pq"
 )
 
-var db *sql.DB
+var DB *sql.DB
 
-func init() {
+func Init() {
 	var err error
-	db, err = sql.Open("postgres", "postgres://matheus:123456789@postgres/albumtacker?sslmode=disable")
+	DB, err = sql.Open("postgres", "postgres://matheus:123456789@postgres/albumtracker?sslmode=disable")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	if err = db.Ping(); err != nil {
+	if err = DB.Ping(); err != nil {
 		log.Fatal(err)
 	}
 

@@ -1,14 +1,15 @@
 package main
 
 import (
-	"album-tracker/server"
+	"album-tracker/routes"
+	"fmt"
+	"log"
 	"net/http"
-
-	_ "github.com/lib/pq"
 )
 
 func main() {
-	http.HandleFunc("/albuns/find", server.FindAlbum)
-	http.HandleFunc("/albuns/register", server.RegisterAlbum)
-	http.ListenAndServe(":8080", nil)
+	r := routes.SetupRoutes()
+
+	fmt.Println("Server running on port 8080")
+	log.Fatal(http.ListenAndServe(":8080", r))
 }
