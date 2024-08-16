@@ -63,7 +63,6 @@ func FindAlbums(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Busca as informações na tabela do banco
 	rows, err := db.DB.Query("SELECT * FROM Album")
 	if err != nil {
 		fmt.Println("server failed to handle", err)
@@ -73,7 +72,6 @@ func FindAlbums(w http.ResponseWriter, r *http.Request) {
 	defer rows.Close()
 	data := make([]models.Album, 0)
 
-	// Scaneia as linhas da tabela e retorna os valores
 	for rows.Next() {
 		album := models.Album{}
 		err := rows.Scan(&album.Name, &album.Artist, &album.Genre, &album.Score, &album.Liked, &album.Played)
@@ -90,8 +88,16 @@ func FindAlbums(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	response := map[string]interface{}{
+		"status":  "success",
+		"message": "Albums retrieved successfully",
+		"count":   len(data),
+		"data":    data,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(data)
+	json.NewEncoder(w).Encode(response)
 }
 
 func FindAlbum(w http.ResponseWriter, r *http.Request) {
@@ -132,8 +138,16 @@ func FindAlbum(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	response := map[string]interface{}{
+		"status":  "success",
+		"message": "Albums retrieved successfully",
+		"count":   len(data),
+		"data":    data,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(data)
+	json.NewEncoder(w).Encode(response)
 }
 
 func FindForScore(w http.ResponseWriter, r *http.Request) {
@@ -176,8 +190,16 @@ func FindForScore(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	response := map[string]interface{}{
+		"status":  "success",
+		"message": "Albums retrieved successfully",
+		"count":   len(data),
+		"data":    data,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(data)
+	json.NewEncoder(w).Encode(response)
 }
 
 func FindForGenre(w http.ResponseWriter, r *http.Request) {
@@ -217,8 +239,16 @@ func FindForGenre(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	response := map[string]interface{}{
+		"status":  "success",
+		"message": "Albums retrieved successfully",
+		"count":   len(data),
+		"data":    data,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(data)
+	json.NewEncoder(w).Encode(response)
 }
 
 func FindForArtist(w http.ResponseWriter, r *http.Request) {
@@ -260,8 +290,16 @@ func FindForArtist(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	response := map[string]interface{}{
+		"status":  "success",
+		"message": "Albums retrieved successfully",
+		"count":   len(data),
+		"data":    data,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(data)
+	json.NewEncoder(w).Encode(response)
 }
 
 func FindLiked(w http.ResponseWriter, r *http.Request) {
@@ -349,8 +387,16 @@ func FindPlayed(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	response := map[string]interface{}{
+		"status":  "success",
+		"message": "Albums retrieved successfully",
+		"count":   len(data),
+		"data":    data,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(data)
+	json.NewEncoder(w).Encode(response)
 }
 
 func DeleteAlbum(w http.ResponseWriter, r *http.Request) {
@@ -389,8 +435,16 @@ func DeleteAlbum(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	response := map[string]interface{}{
+		"status":  "success",
+		"message": "Albums deleted successfully",
+		"count":   len(data),
+		"data":    data,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(data)
+	json.NewEncoder(w).Encode(response)
 }
 
 func UpdateAlbum(w http.ResponseWriter, r *http.Request) {
