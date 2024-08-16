@@ -18,9 +18,8 @@ func SetupRoutes() *mux.Router {
 	r.HandleFunc("/albuns/{name}", handlers.UpdateAlbum).Methods("PUT")
 	r.HandleFunc("/albuns/score/{score}", handlers.FindForScore).Methods("GET")
 	r.HandleFunc("/albuns/genre/{genre}", handlers.FindForGenre).Methods("GET")
-	r.HandleFunc("/albuns/liked", handlers.FindLiked).Methods("GET")
-	r.HandleFunc("/albuns/notliked", handlers.FindNotLiked).Methods("GET")
-	r.HandleFunc("/albuns/notplayed", handlers.FindNotPlayed).Methods("GET")
+	r.HandleFunc("/albuns/liked/{bool}", handlers.FindLiked).Methods("GET")
+	r.HandleFunc("/albuns/played/{bool}", handlers.FindPlayed).Methods("GET")
 
 	return r
 }

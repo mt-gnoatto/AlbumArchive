@@ -214,27 +214,30 @@ func FindForGenre(w http.ResponseWriter, r *http.Request) {
 }
 
 func FindLiked(w http.ResponseWriter, r *http.Request) {
+
+	vars := mux.Vars(r)
+	liked := vars["bool"]
+
 	if r.Method != "GET" {
 		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
 		return
 	}
 
-	rows, err := db.DB.Query("SELECT name, genre, score, liked, played FROM album WHERE liked = true")
+	rows, err := db.DB.Query("SELECT * FROM album where liked = $1", liked)
 	if err != nil {
-		fmt.Println("Query error:", err)
-		http.Error(w, "Failed to query the database", http.StatusInternalServerError)
+		fmt.Println("server failed to handle", err)
 		return
 	}
-	defer rows.Close()
 
+	defer rows.Close()
 	data := make([]models.Album, 0)
 
+	// Scaneia as linhas da tabela e retorna os valores
 	for rows.Next() {
-		var album models.Album
+		album := models.Album{}
 		err := rows.Scan(&album.Name, &album.Genre, &album.Score, &album.Liked, &album.Played)
 		if err != nil {
-			fmt.Println("Error scanning row:", err)
-			http.Error(w, "Failed to read query results", http.StatusInternalServerError)
+			fmt.Println("server failed to handle", err)
 			return
 		}
 
@@ -242,13 +245,8 @@ func FindLiked(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err = rows.Err(); err != nil {
-		fmt.Println("Row iteration error:", err)
-		http.Error(w, "Error during query iteration", http.StatusInternalServerError)
+		fmt.Println("server failed to handle", err)
 		return
-	}
-
-	if len(data) == 0 {
-		fmt.Println("No liked albums found.")
 	}
 
 	w.WriteHeader(http.StatusOK)
@@ -256,88 +254,15 @@ func FindLiked(w http.ResponseWriter, r *http.Request) {
 }
 
 func FindPlayed(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	played := vars["bool"]
+
 	if r.Method != "GET" {
 		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
 		return
 	}
 
-	rows, err := db.DB.Query("SELECT name, genre, score, liked, played FROM album WHERE played = true")
-	if err != nil {
-		fmt.Println("server failed to handle", err)
-		http.Error(w, "Failed to query the database", http.StatusInternalServerError)
-		return
-	}
-
-	defer rows.Close()
-	data := make([]models.Album, 0)
-
-	for rows.Next() {
-		album := models.Album{}
-		err := rows.Scan(&album.Name, &album.Genre, &album.Score, &album.Liked, &album.Played)
-		if err != nil {
-			fmt.Println("server failed to handle", err)
-			http.Error(w, "Failed to read query results", http.StatusInternalServerError)
-			return
-		}
-
-		data = append(data, album)
-	}
-
-	if err = rows.Err(); err != nil {
-		fmt.Println("server failed to handle", err)
-		http.Error(w, "Error during query iteration", http.StatusInternalServerError)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(data)
-}
-
-func FindNotLiked(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
-		return
-	}
-
-	rows, err := db.DB.Query("SELECT name, genre, score, liked, played FROM album WHERE liked = false")
-	if err != nil {
-		fmt.Println("server failed to handle", err)
-		http.Error(w, "Failed to query the database", http.StatusInternalServerError)
-		return
-	}
-
-	defer rows.Close()
-	data := make([]models.Album, 0)
-
-	for rows.Next() {
-		album := models.Album{}
-		err := rows.Scan(&album.Name, &album.Genre, &album.Score, &album.Liked, &album.Played)
-		if err != nil {
-			fmt.Println("server failed to handle", err)
-			http.Error(w, "Failed to read query results", http.StatusInternalServerError)
-			return
-		}
-
-		data = append(data, album)
-	}
-
-	if err = rows.Err(); err != nil {
-		fmt.Println("server failed to handle", err)
-		http.Error(w, "Error during query iteration", http.StatusInternalServerError)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(data)
-}
-
-func FindNotPlayed(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "GET" {
-		http.Error(w, http.StatusText(405), http.StatusMethodNotAllowed)
-		return
-	}
-
-	rows, err := db.DB.Query("SELECT name, genre, score, liked, played FROM Album WHERE played = false")
+	rows, err := db.DB.Query("SELECT name, genre, score, liked, played FROM album WHERE played = $1", played)
 	if err != nil {
 		fmt.Println("server failed to handle", err)
 		http.Error(w, "Failed to query the database", http.StatusInternalServerError)
@@ -441,7 +366,7 @@ func UpdateAlbum(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	result, err := db.DB.Exec("UPDATE Album SET genre = $2, score = $3, liked = $4, played = $5 WHERE name = $1", nameParam, a.Genre, a.Score, a.Liked, a.Played)
+	result, err := db.DB.Exec("UPDATE Album SET name = $1, genre = $2, score = $3, liked = $4, played = $5 WHERE name = $6", a.Name, a.Genre, a.Score, a.Liked, a.Played, nameParam)
 	if err != nil {
 		fmt.Println("server failed to handle", err)
 		return
