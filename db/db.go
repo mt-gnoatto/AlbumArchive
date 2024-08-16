@@ -12,7 +12,7 @@ var DB *sql.DB
 
 func Init() {
 	var err error
-	DB, err = sql.Open("postgres", "postgres://matheus:123456789@postgres/albumtracker?sslmode=disable")
+	DB, err = sql.Open("postgres", "postgres://matheus:123456789@postgres/albumarchive?sslmode=disable")
 	if err != nil {
 		log.Fatal(err)
 	}

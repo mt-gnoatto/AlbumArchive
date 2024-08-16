@@ -6,13 +6,13 @@ services:
     environment:
       - POSTGRES_USER=matheus
       - POSTGRES_PASSWORD=123456789
-      - POSTGRES_DB=albumtracker
+      - POSTGRES_DB=albumarchive
     ports:
       - '5432:5432'
     volumes:
       - database_postgres:/var/lib/postgresql/data
     networks:
-      - albumtracker
+      - albumarchive
 
   app:
     container_name: app
@@ -27,10 +27,10 @@ services:
     depends_on:
       - postgres
     networks:
-      - albumtracker
+      - albumarchive
 volumes:
   api:
   database_postgres:
 
 networks:
-  albumtracker:
+  albumarchive:
